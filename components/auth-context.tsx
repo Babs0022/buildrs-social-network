@@ -31,18 +31,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     try {
       setIsLoading(true)
+      console.log("[v0] Starting wallet sign-in for address:", address)
 
       // Create a message to sign
       const message = `Sign in to BUILDRS with your wallet: ${address}\nTimestamp: ${Date.now()}`
 
       // Sign the message
       const signature = await signMessageAsync({ message })
+      console.log("[v0] Message signed successfully")
 
       // Check if profile exists in Firestore
       const profileRef = doc(db, "profiles", address)
       const profileSnap = await getDoc(profileRef)
 
       if (!profileSnap.exists()) {
+        console.log("[v0] Creating new profile for address:", address)
         const newProfile = {
           id: address,
           walletAddress: address,
@@ -62,12 +65,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
         await setDoc(profileRef, newProfile)
         setProfile(newProfile)
+        console.log("[v0] New profile created")
       } else {
+        console.log("[v0] Existing profile loaded")
         setProfile(profileSnap.data())
       }
 
       // Set user as authenticated
       setUser({ address, signature })
+      console.log("[v0] User authenticated successfully")
     } catch (error) {
       console.error("Wallet sign-in failed:", error)
       setUser(null)
@@ -88,12 +94,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   useEffect(() => {
-    if (isConnected && address && !user) {
+    if (isConnected && address && !user && !isLoading) {
+      console.log("[v0] Wallet connected, starting sign-in process")
       signInWithWallet()
     } else if (!isConnected && user) {
+      console.log("[v0] Wallet disconnected, signing out")
       signOutUser()
+    } else if (!isConnected) {
+      setIsLoading(false)
     }
-  }, [isConnected, address])
+  }, [isConnected, address, user])
 
   useEffect(() => {
     setIsLoading(false)

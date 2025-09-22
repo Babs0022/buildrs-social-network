@@ -13,7 +13,10 @@ export default function ConnectWalletPage() {
   const router = useRouter()
 
   useEffect(() => {
+    console.log("[v0] Connect page state:", { isConnected, user: !!user, profile: !!profile, isLoading })
+
     if (isConnected && user && profile && !isLoading) {
+      console.log("[v0] Redirecting user, onboarding completed:", profile.onboardingCompleted)
       if (profile.onboardingCompleted === false) {
         router.push("/onboarding")
       } else {
@@ -21,6 +24,21 @@ export default function ConnectWalletPage() {
       }
     }
   }, [isConnected, user, profile, isLoading, router])
+
+  if (isConnected && isLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center p-4">
+        <Card className="w-full max-w-md">
+          <CardContent className="flex items-center justify-center py-8">
+            <div className="text-center space-y-4">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
+              <p className="text-sm text-muted-foreground">Setting up your account...</p>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    )
+  }
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
