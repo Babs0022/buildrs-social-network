@@ -43,7 +43,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const profileSnap = await getDoc(profileRef)
 
       if (!profileSnap.exists()) {
-        // Create new profile
         const newProfile = {
           id: address,
           walletAddress: address,
@@ -51,10 +50,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           displayName: `Builder ${address.slice(-6)}`,
           bio: "",
           avatar: "",
+          skills: [],
           builderScore: 0,
           totalUpvotes: 0,
           buildStreak: 0,
           socialLinks: {},
+          onboardingCompleted: false,
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
         }

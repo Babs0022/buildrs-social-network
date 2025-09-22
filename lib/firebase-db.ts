@@ -22,6 +22,7 @@ export interface FirebaseProfile {
   displayName: string
   bio?: string
   avatar?: string
+  skills?: string[] // Added skills array for onboarding
   builderScore: number
   totalUpvotes: number
   buildStreak: number
@@ -30,6 +31,7 @@ export interface FirebaseProfile {
     twitter?: string
     farcaster?: string
   }
+  onboardingCompleted?: boolean // Added onboarding completion flag
   createdAt: string
   updatedAt: string
 }

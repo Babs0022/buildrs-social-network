@@ -9,14 +9,18 @@ import { useEffect } from "react"
 
 export default function ConnectWalletPage() {
   const { isConnected } = useAccount()
-  const { user, isLoading } = useAuth()
+  const { user, profile, isLoading } = useAuth()
   const router = useRouter()
 
   useEffect(() => {
-    if (isConnected && user && !isLoading) {
-      router.push("/feed")
+    if (isConnected && user && profile && !isLoading) {
+      if (profile.onboardingCompleted === false) {
+        router.push("/onboarding")
+      } else {
+        router.push("/feed")
+      }
     }
-  }, [isConnected, user, isLoading, router])
+  }, [isConnected, user, profile, isLoading, router])
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
